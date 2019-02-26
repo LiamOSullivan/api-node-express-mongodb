@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 var cron = require("node-cron");
+var bodyParser = require('body-parser');
+// var morgan = require('morgan');
+// var logger = require("./utils/logger");
 require('dotenv').config();
 
 
@@ -23,6 +26,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+//
+// logger.debug("Overriding 'Express' logger");
+// app.use(morgan('combined', {
+//   "stream": logger.stream
+// }));
 
 app.use('/', index);
 app.use('/api', api);
@@ -46,26 +54,26 @@ let Station = dublinBikesConnection.model('Station', BikesStationSchema);
 
 //Hourly trend data- rewritten every day
 let bikesByHour;
-// cron.schedule("12 */1 * * *", function() {
-cron.schedule("*/1 * * * *", function() {
-  let http = require('https');
-  let fs = require('fs');
 
-  let fileName = "bikesData-" + new Date().getHours() + ".json";
-  bikesByHour = fs.createWriteStream("./public/data/transport/" + fileName);
-  http.get("https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=" +
-    process.env.BIKES_API_KEY,
-    function(response, error) {
-      if (error) {
-        return console.log(">>>Error on bikes trend GET\n");
-      };
-      //save to file
-      //response.pipe(bikesByHour);
-      //upload to MongoDB
-      response.on("data", function(chunk) {
-        console.log("BODY: " + chunk);
-      });
-    });
+const getDublinBikesData = async url => {
+
+  const fetch = require("node-fetch");
+  try {
+    const response = await fetch(url);
+    const json = await response.json();
+    console.log(json[0]);
+    Station.insertMany(json);
+
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const bikesURI = 'https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=' + process.env.BIKES_API_KEY;
+getDublinBikesData(bikesURI);
+
+cron.schedule("15 * * * *", function() {
+  getDublinBikesData(bikesURI);
 });
 
 let hour = new Date().getHours();
