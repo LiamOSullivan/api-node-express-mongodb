@@ -61,7 +61,7 @@ const getDublinBikesData = async url => {
   try {
     const response = await fetch(url);
     const json = await response.json();
-    console.log(json[0]);
+    //console.log(json[0]);
     Station.insertMany(json);
 
   } catch (error) {
