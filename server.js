@@ -53,19 +53,19 @@ cron.schedule("*/1 * * * *", function() {
 
   let fileName = "bikesData-" + new Date().getHours() + ".json";
   bikesByHour = fs.createWriteStream("./public/data/transport/" + fileName);
-  http.get("https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=" + process.env.BIKES_API_KEY, function(response, error) {
-    if (error) {
-      return console.log(">>>Error on bikes trend GET\n");
-    };
-    //save to file
-    response.pipe(bikesByHour);
-    //upload to MongoDB
-
-
-  });
-
-
-
+  http.get("https://api.jcdecaux.com/vls/v1/stations?contract=dublin&apiKey=" +
+    process.env.BIKES_API_KEY,
+    function(response, error) {
+      if (error) {
+        return console.log(">>>Error on bikes trend GET\n");
+      };
+      //save to file
+      //response.pipe(bikesByHour);
+      //upload to MongoDB
+      response.on("data", function(chunk) {
+        console.log("BODY: " + chunk);
+      });
+    });
 });
 
 let hour = new Date().getHours();
