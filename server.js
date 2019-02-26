@@ -9,8 +9,9 @@ const index = require('./routes/index');
 const api = require('./routes/api');
 
 const app = express();
-app.listen(3001, function() {
-  console.log('Listening on port 3000');
+const PORT = 3001;
+app.listen(PORT, function() {
+  console.log('Listening on port ' + PORT);
 })
 
 app.use(express.json());
@@ -57,8 +58,9 @@ cron.schedule("*/1 * * * *", function() {
       return console.log(">>>Error on bikes trend GET\n");
     };
     //save to file
-    //response.pipe(bikesByHour);
+    response.pipe(bikesByHour);
     //upload to MongoDB
+
 
   });
 
