@@ -1,0 +1,29 @@
+{
+  "name": "crud_app",
+  "version": "1.0.0",
+  "nodemonConfig": {
+    "ignore": [
+      "/public/data/transport/*"
+    ]
+  },
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+  },
+  "author": "LiamOSullivan",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "moment": "^2.24.0",
+    "mongodb": "^3.1.13",
+    "mongoose": "^5.4.13",
+    "node-cron": "^2.0.3",
+    "pug": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
+}
